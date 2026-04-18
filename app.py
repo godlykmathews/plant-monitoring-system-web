@@ -9,8 +9,12 @@ app = Flask(__name__)
 # This relies on the GOOGLE_APPLICATION_CREDENTIALS environment variable
 # or default service account permissions when deployed to Google Cloud.
 try:
-    db = firestore.Client()
-    print("Firestore Client Initialized Successfully")
+    if os.path.exists("service-account.json"):
+        db = firestore.Client.from_service_account_json("service-account.json")
+        print("Firestore Client Initialized using service-account.json")
+    else:
+        db = firestore.Client()
+        print("Firestore Client Initialized Successfully using default credentials")
 except Exception as e:
     print(f"Warning: Failed to initialize Firestore client: {e}")
     db = None
